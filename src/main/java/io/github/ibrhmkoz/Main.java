@@ -2,14 +2,14 @@ import io.github.ibrhmkoz.monkeylang.token.Token;
 
 import static io.github.ibrhmkoz.monkeylang.token.Token.Operator.PLUS;
 
-static class SomeFunction {
-    static Token call() {
+static class Some {
+    static Token token() {
         return new Token.Illegal('?');
     }
 }
 
 void main() {
-    var token = SomeFunction.call();
+    var token = Some.token();
 
     switch (token) {
         case PLUS -> IO.println(token);
