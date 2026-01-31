@@ -7,23 +7,12 @@ public sealed interface Token {
     record Int(int value) implements Token {
     }
 
-    enum Operator implements Token {
-        ASSIGN, PLUS,
-    }
-
-    enum Delimiter implements Token {
-        COMMA, SEMICOLON, LPAREN, RPAREN, LBRACE, RBRACE
-    }
-
-    enum Keyword implements Token {
-        FUNCTION, LET
-    }
-
-    enum EOF implements Token {
-        INSTANCE;
-    }
-
     record Illegal(char ch) implements Token {
     }
-}
 
+    enum Simple implements Token {
+        ASSIGN, PLUS, COMMA, SEMICOLON,
+        LPAREN, RPAREN, LBRACE, RBRACE,
+        FUNCTION, LET, EOF
+    }
+}

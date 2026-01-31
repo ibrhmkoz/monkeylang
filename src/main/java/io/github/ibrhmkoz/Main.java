@@ -1,6 +1,7 @@
 import io.github.ibrhmkoz.monkeylang.token.Token;
 
-import static io.github.ibrhmkoz.monkeylang.token.Token.Operator.PLUS;
+import static io.github.ibrhmkoz.monkeylang.token.Token.Simple.PLUS;
+
 
 static class Some {
     static Token token() {
