@@ -30,5 +30,5 @@ public sealed interface Token {
 
     enum Let implements Token {INSTANCE}
 
-    enum EOF implements Token {INSTANCE}
+    enum Eof implements Token {INSTANCE}
 }
