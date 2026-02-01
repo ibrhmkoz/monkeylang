@@ -16,7 +16,7 @@ public interface TokenizerContract {
     }
 
     @Test
-    default void testNextToken_EOF() {
+    default void testNextToken_Eof() {
         Tokenizer tokenizer = createTokenizer("");
         assertEquals(Token.Eof.INSTANCE, tokenizer.nextToken());
     }
