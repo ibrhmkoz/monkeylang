@@ -1,5 +1,4 @@
 import io.github.ibrhmkoz.monkeylang.token.Token;
-import java.util.ArrayList;
 
 static class Some {
 
@@ -15,10 +14,10 @@ void main() {
     switch (token) {
         case Token.Plus _ -> IO.println("");
         case Token.Illegal(var ch) -> IO.println(
-            "This token is illegal: " + ch
+                "This token is illegal: " + ch
         );
         default -> throw new IllegalStateException(
-            "Unexpected value: " + token
+                "Unexpected value: " + token
         );
     }
 }
