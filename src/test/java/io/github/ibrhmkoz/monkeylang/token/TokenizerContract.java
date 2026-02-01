@@ -75,7 +75,7 @@ public interface TokenizerContract {
         };
 
         Tokenizer tokenizer = createTokenizer(input);
-        for (Token token : expected) {
+        for (var token : expected) {
             assertEquals(token, tokenizer.nextToken());
         }
         assertEquals(Token.Eof.INSTANCE, tokenizer.nextToken());
