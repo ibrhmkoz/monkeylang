@@ -1,44 +1,33 @@
 # Default recipe
 default: build
 
-# Build the project
+# Build the project (clean build to avoid stale class issues with Java 25)
 build:
-    mvn compile
+    mvn clean compile -q
 
-# Run all tests
+# Run all tests (clean build)
 test:
-    mvn test
+    mvn clean test -q
 
 # Run a specific test class
 test-class class:
-    mvn test -Dtest={{class}}
+    mvn clean test -q -Dtest={{ class }}
 
 # Clean build artifacts
 clean:
     mvn clean
 
-# Clean and build
-rebuild: clean build
-
 # Package the project
 package:
-    mvn package
+    mvn clean package -q
 
 # Install to local repository
 install:
-    mvn install
-
-# Run with quiet output
-build-quiet:
-    mvn compile -q
-
-# Run tests with quiet output
-test-quiet:
-    mvn test -q
+    mvn clean install -q
 
 # Verify the project
 verify:
-    mvn verify
+    mvn clean verify -q
 
 # Show dependency tree
 deps:
