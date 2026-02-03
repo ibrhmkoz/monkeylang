@@ -30,6 +30,8 @@ public interface TokenizerContract {
                     x + y;
                 };
                 let result = add(five, ten);
+                !-/*5;
+                5 < 10 > 5;
                 """;
 
         var expected = new Token[]{
@@ -38,13 +40,11 @@ public interface TokenizerContract {
                 Token.Assign.INSTANCE,
                 new Token.Int(5),
                 Token.Semicolon.INSTANCE,
-
                 Token.Let.INSTANCE,
                 new Token.Ident("ten"),
                 Token.Assign.INSTANCE,
                 new Token.Int(10),
                 Token.Semicolon.INSTANCE,
-
                 Token.Let.INSTANCE,
                 new Token.Ident("add"),
                 Token.Assign.INSTANCE,
@@ -61,7 +61,6 @@ public interface TokenizerContract {
                 Token.Semicolon.INSTANCE,
                 Token.RBrace.INSTANCE,
                 Token.Semicolon.INSTANCE,
-
                 Token.Let.INSTANCE,
                 new Token.Ident("result"),
                 Token.Assign.INSTANCE,
@@ -71,6 +70,18 @@ public interface TokenizerContract {
                 Token.Comma.INSTANCE,
                 new Token.Ident("ten"),
                 Token.RParen.INSTANCE,
+                Token.Semicolon.INSTANCE,
+                Token.Bang.INSTANCE,
+                Token.Minus.INSTANCE,
+                Token.Slash.INSTANCE,
+                Token.Asterisk.INSTANCE,
+                new Token.Int(5),
+                Token.Semicolon.INSTANCE,
+                new Token.Int(5),
+                Token.LessThan.INSTANCE,
+                new Token.Int(10),
+                Token.GreaterThan.INSTANCE,
+                new Token.Int(5),
                 Token.Semicolon.INSTANCE,
         };
 
