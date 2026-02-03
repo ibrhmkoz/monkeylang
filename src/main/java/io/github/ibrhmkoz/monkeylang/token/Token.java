@@ -74,6 +74,26 @@ public sealed interface Token {
         INSTANCE,
     }
 
+    enum True implements Token {
+        INSTANCE,
+    }
+
+    enum False implements Token {
+        INSTANCE,
+    }
+
+    enum If implements Token {
+        INSTANCE,
+    }
+
+    enum Else implements Token {
+        INSTANCE,
+    }
+
+    enum Return implements Token {
+        INSTANCE,
+    }
+
     enum Eof implements Token {
         INSTANCE,
     }
