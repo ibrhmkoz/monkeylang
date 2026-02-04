@@ -1,5 +1,6 @@
 package io.github.ibrhmkoz.monkeylang.token.basic;
 
+import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
 
@@ -11,10 +12,8 @@ public class BasicTokenizer implements Tokenizer {
     private int i = 0;
 
     private static final Map<Character, Token> SYMBOLS = Map.ofEntries(
-        Map.entry('=', Token.Assign.INSTANCE),
         Map.entry('+', Token.Plus.INSTANCE),
         Map.entry('-', Token.Minus.INSTANCE),
-        Map.entry('!', Token.Bang.INSTANCE),
         Map.entry('*', Token.Asterisk.INSTANCE),
         Map.entry('/', Token.Slash.INSTANCE),
         Map.entry('<', Token.LessThan.INSTANCE),
@@ -57,6 +56,32 @@ public class BasicTokenizer implements Tokenizer {
         }
 
         char ch = input.charAt(i);
+
+        if (ch == '=') {
+            return switch (peekChar()) {
+                case Result.Ok(Character next) when next == '=' -> {
+                    i += 2;
+                    yield Token.Eq.INSTANCE;
+                }
+                default -> {
+                    i++;
+                    yield Token.Assign.INSTANCE;
+                }
+            };
+        }
+
+        if (ch == '!') {
+            return switch (peekChar()) {
+                case Result.Ok(Character next) when next == '=' -> {
+                    i += 2;
+                    yield Token.NotEq.INSTANCE;
+                }
+                default -> {
+                    i++;
+                    yield Token.Bang.INSTANCE;
+                }
+            };
+        }
 
         Token symbol = SYMBOLS.get(ch);
         if (symbol != null) {
@@ -110,5 +135,12 @@ public class BasicTokenizer implements Tokenizer {
 
     private boolean isDigit(char ch) {
         return ch >= '0' && ch <= '9';
+    }
+
+    private Result<Character, String> peekChar() {
+        if (i + 1 >= input.length()) {
+            return Result.err("End of input");
+        }
+        return Result.ok(input.charAt(i + 1));
     }
 }

@@ -14,6 +14,14 @@ public sealed interface Token {
         INSTANCE,
     }
 
+    enum Eq implements Token {
+        INSTANCE,
+    }
+
+    enum NotEq implements Token {
+        INSTANCE,
+    }
+
     enum Plus implements Token {
         INSTANCE,
     }

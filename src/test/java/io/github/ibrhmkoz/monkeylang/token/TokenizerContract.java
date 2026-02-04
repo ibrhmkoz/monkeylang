@@ -37,6 +37,9 @@ public interface TokenizerContract {
             } else {
                 return false;
             }
+
+            10 == 10;
+            10 != 9;
             """;
 
         var expected = new Token[]{
@@ -105,6 +108,14 @@ public interface TokenizerContract {
             Token.False.INSTANCE,
             Token.Semicolon.INSTANCE,
             Token.RBrace.INSTANCE,
+            new Token.Int(10),
+            Token.Eq.INSTANCE,
+            new Token.Int(10),
+            Token.Semicolon.INSTANCE,
+            new Token.Int(10),
+            Token.NotEq.INSTANCE,
+            new Token.Int(9),
+            Token.Semicolon.INSTANCE,
         };
 
         Tokenizer tokenizer = createTokenizer(input);
