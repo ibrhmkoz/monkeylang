@@ -58,29 +58,21 @@ public class BasicTokenizer implements Tokenizer {
         char ch = input.charAt(i);
 
         if (ch == '=') {
-            return switch (peekChar()) {
-                case Result.Ok(Character next) when next == '=' -> {
-                    i += 2;
-                    yield Token.Eq.INSTANCE;
-                }
-                default -> {
-                    i++;
-                    yield Token.Assign.INSTANCE;
-                }
-            };
+            if (peekChar() instanceof Result.Ok(Character next) && next == '=') {
+                i += 2;
+                return Token.Eq.INSTANCE;
+            }
+            i++;
+            return Token.Assign.INSTANCE;
         }
 
         if (ch == '!') {
-            return switch (peekChar()) {
-                case Result.Ok(Character next) when next == '=' -> {
-                    i += 2;
-                    yield Token.NotEq.INSTANCE;
-                }
-                default -> {
-                    i++;
-                    yield Token.Bang.INSTANCE;
-                }
-            };
+            if (peekChar() instanceof Result.Ok(Character next) && next == '=') {
+                i += 2;
+                return Token.NotEq.INSTANCE;
+            }
+            i++;
+            return Token.Bang.INSTANCE;
         }
 
         Token symbol = SYMBOLS.get(ch);
