@@ -3,7 +3,6 @@ package io.github.ibrhmkoz.monkeylang.token.basic;
 import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
-
 import java.util.Map;
 
 public class BasicTokenizer implements Tokenizer {
@@ -12,36 +11,34 @@ public class BasicTokenizer implements Tokenizer {
     private int i = 0;
 
     private static final Map<Character, Token> SYMBOLS = Map.ofEntries(
-        Map.entry('+', Token.Plus.INSTANCE),
-        Map.entry('-', Token.Minus.INSTANCE),
-        Map.entry('*', Token.Asterisk.INSTANCE),
-        Map.entry('/', Token.Slash.INSTANCE),
-        Map.entry('<', Token.LessThan.INSTANCE),
-        Map.entry('>', Token.GreaterThan.INSTANCE),
-        Map.entry('(', Token.LParen.INSTANCE),
-        Map.entry(')', Token.RParen.INSTANCE),
-        Map.entry('{', Token.LBrace.INSTANCE),
-        Map.entry('}', Token.RBrace.INSTANCE),
-        Map.entry(',', Token.Comma.INSTANCE),
-        Map.entry(';', Token.Semicolon.INSTANCE)
-    );
+            Map.entry('+', Token.Plus.INSTANCE),
+            Map.entry('-', Token.Minus.INSTANCE),
+            Map.entry('*', Token.Asterisk.INSTANCE),
+            Map.entry('/', Token.Slash.INSTANCE),
+            Map.entry('<', Token.LessThan.INSTANCE),
+            Map.entry('>', Token.GreaterThan.INSTANCE),
+            Map.entry('(', Token.LParen.INSTANCE),
+            Map.entry(')', Token.RParen.INSTANCE),
+            Map.entry('{', Token.LBrace.INSTANCE),
+            Map.entry('}', Token.RBrace.INSTANCE),
+            Map.entry(',', Token.Comma.INSTANCE),
+            Map.entry(';', Token.Semicolon.INSTANCE));
 
     private static final Map<String, Token> KEYWORDS = Map.of(
-        "let",
-        Token.Let.INSTANCE,
-        "fn",
-        Token.Function.INSTANCE,
-        "true",
-        Token.True.INSTANCE,
-        "false",
-        Token.False.INSTANCE,
-        "if",
-        Token.If.INSTANCE,
-        "else",
-        Token.Else.INSTANCE,
-        "return",
-        Token.Return.INSTANCE
-    );
+            "let",
+            Token.Let.INSTANCE,
+            "fn",
+            Token.Function.INSTANCE,
+            "true",
+            Token.True.INSTANCE,
+            "false",
+            Token.False.INSTANCE,
+            "if",
+            Token.If.INSTANCE,
+            "else",
+            Token.Else.INSTANCE,
+            "return",
+            Token.Return.INSTANCE);
 
     public BasicTokenizer(String input) {
         this.input = input;
@@ -120,9 +117,7 @@ public class BasicTokenizer implements Tokenizer {
     }
 
     private boolean isLetter(char ch) {
-        return (
-            (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_'
-        );
+        return ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_');
     }
 
     private boolean isDigit(char ch) {

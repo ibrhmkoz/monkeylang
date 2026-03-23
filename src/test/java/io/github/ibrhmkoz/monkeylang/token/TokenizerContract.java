@@ -42,7 +42,7 @@ public interface TokenizerContract {
             10 != 9;
             """;
 
-        var expected = new Token[]{
+        var expected = new Token[] {
             Token.Let.INSTANCE,
             new Token.Ident("five"),
             Token.Assign.INSTANCE,

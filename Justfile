@@ -36,3 +36,11 @@ deps:
 # Check for dependency updates
 updates:
     mvn versions:display-dependency-updates
+
+# Format source code
+format:
+    mvn spotless:apply -q
+
+# Check formatting without applying
+format-check:
+    mvn spotless:check -q

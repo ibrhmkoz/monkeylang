@@ -2,7 +2,6 @@ package io.github.ibrhmkoz.monkeylang.repl;
 
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.basic.BasicTokenizer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
