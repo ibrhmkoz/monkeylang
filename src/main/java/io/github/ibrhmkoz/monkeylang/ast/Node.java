@@ -2,7 +2,7 @@ package io.github.ibrhmkoz.monkeylang.ast;
 
 import java.util.List;
 
-public sealed interface Node permits Node.Program, Node.Statement, Node.Expression {
+public sealed interface Node {
 
     record Program(List<Statement> statements) implements Node {}
 
