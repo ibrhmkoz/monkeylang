@@ -44,6 +44,7 @@ public class BasicParser implements Parser {
     private Result<Node.Statement, String> parseStatement() {
         return switch (curToken) {
             case Token.Let _ -> parseLetStatement();
+            case Token.Return _ -> parseReturnStatement();
             default -> Result.err("unexpected token: " + curToken);
         };
     }
@@ -64,6 +65,12 @@ public class BasicParser implements Parser {
         skipToSemicolon();
 
         return Result.ok(new Node.Statement.Let(name, null));
+    }
+
+    private Result<Node.Statement, String> parseReturnStatement() {
+        advance();
+        skipToSemicolon();
+        return Result.ok(new Node.Statement.Return(null));
     }
 
     private void skipToSemicolon() {

@@ -26,6 +26,21 @@ public interface ParserContract {
     }
 
     @Test
+    default void testReturnStatements() {
+        var input =
+                """
+                return 5;
+                return 10;
+                return 993322;
+                """;
+
+        var program = createParser(input).parse();
+
+        assertEquals(3, program.statements().size());
+        assertTrue(program.statements().stream().allMatch(s -> s instanceof Node.Statement.Return));
+    }
+
+    @Test
     default void testLetStatements() {
         var input =
                 """
