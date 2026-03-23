@@ -7,12 +7,15 @@ import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BasicParser implements Parser {
 
     private final Tokenizer tokenizer;
     private Token curToken;
     private Token peekToken;
+    private final List<String> errors = new ArrayList<>();
 
     public BasicParser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
@@ -21,11 +24,17 @@ public class BasicParser implements Parser {
     }
 
     @Override
+    public List<String> errors() {
+        return Collections.unmodifiableList(errors);
+    }
+
+    @Override
     public Node.Program parse() {
         var statements = new ArrayList<Node.Statement>();
         while (!(curToken instanceof Token.Eof)) {
-            if (parseStatement() instanceof Result.Ok<Node.Statement, String>(var stmt)) {
-                statements.add(stmt);
+            switch (parseStatement()) {
+                case Result.Ok<Node.Statement, String>(var stmt) -> statements.add(stmt);
+                case Result.Err<Node.Statement, String>(var error) -> errors.add(error);
             }
             advance();
         }
@@ -41,19 +50,26 @@ public class BasicParser implements Parser {
 
     private Result<Node.Statement, String> parseLetStatement() {
         if (!(peekToken instanceof Token.Ident(String name))) {
+            skipToSemicolon();
             return Result.err("expected identifier, got: " + peekToken);
         }
         advance();
 
         if (!(peekToken instanceof Token.Assign)) {
+            skipToSemicolon();
             return Result.err("expected '=', got: " + peekToken);
         }
 
-        do {
-            advance();
-        } while (!(curToken instanceof Token.Semicolon) && !(curToken instanceof Token.Eof));
+        advance();
+        skipToSemicolon();
 
         return Result.ok(new Node.Statement.Let(name, null));
+    }
+
+    private void skipToSemicolon() {
+        while (!(curToken instanceof Token.Semicolon) && !(curToken instanceof Token.Eof)) {
+            advance();
+        }
     }
 
     private void advance() {

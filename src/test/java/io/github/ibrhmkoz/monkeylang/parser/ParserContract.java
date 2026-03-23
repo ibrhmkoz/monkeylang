@@ -11,6 +11,21 @@ public interface ParserContract {
     Parser createParser(String input);
 
     @Test
+    default void testLetStatementErrors() {
+        var input =
+                """
+                let x 5;
+                let = 10;
+                let 838383;
+                """;
+
+        var parser = createParser(input);
+        parser.parse();
+
+        assertEquals(3, parser.errors().size());
+    }
+
+    @Test
     default void testLetStatements() {
         var input =
                 """
