@@ -7,7 +7,7 @@ public sealed interface Node {
     record Program(List<Statement> statements) implements Node {}
 
     sealed interface Statement extends Node {
-        record Let(Expression.Identifier name, Expression value) implements Statement {}
+        record Let(String name, Expression value) implements Statement {}
 
         record Return(Expression value) implements Statement {}
 
