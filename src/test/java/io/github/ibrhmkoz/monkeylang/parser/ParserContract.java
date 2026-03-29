@@ -49,6 +49,15 @@ public interface ParserContract {
     }
 
     @Test
+    default void testUnparse() {
+        var program = new Node.Program(List.of(
+                new Node.Statement.Let("myVar", new Node.Expression.Identifier("anotherVar"))
+        ));
+
+        assertEquals("let myVar = anotherVar;", program.unparse());
+    }
+
+    @Test
     default void testLetStatements() {
         var input =
                 """
