@@ -8,98 +8,218 @@ public sealed interface Token {
     record Illegal(char ch) implements Token {}
 
     enum Assign implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "=";
+        }
     }
 
     enum Eq implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "==";
+        }
     }
 
     enum NotEq implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "!=";
+        }
     }
 
     enum Plus implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "+";
+        }
     }
 
     enum Minus implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "-";
+        }
     }
 
     enum Bang implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "!";
+        }
     }
 
     enum Asterisk implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "*";
+        }
     }
 
     enum Slash implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "/";
+        }
     }
 
     enum LessThan implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "<";
+        }
     }
 
     enum GreaterThan implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return ">";
+        }
     }
 
     enum Comma implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return ",";
+        }
     }
 
     enum Semicolon implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return ";";
+        }
     }
 
     enum LParen implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "(";
+        }
     }
 
     enum RParen implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return ")";
+        }
     }
 
     enum LBrace implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "{";
+        }
     }
 
     enum RBrace implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "}";
+        }
     }
 
     enum Function implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "fn";
+        }
     }
 
     enum Let implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "let";
+        }
     }
 
     enum True implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "true";
+        }
     }
 
     enum False implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "false";
+        }
     }
 
     enum If implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "if";
+        }
     }
 
     enum Else implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "else";
+        }
     }
 
     enum Return implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "return";
+        }
     }
 
     enum Eof implements Token {
-        INSTANCE,
+        INSTANCE;
+
+        @Override
+        public String toString() {
+            return "EOF";
+        }
     }
 }
