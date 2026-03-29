@@ -7,7 +7,6 @@ import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BasicParser implements Parser {
@@ -15,8 +14,6 @@ public class BasicParser implements Parser {
     private final Tokenizer tokenizer;
     private Token curToken;
     private Token peekToken;
-    private final List<String> errors = new ArrayList<>();
-
     public BasicParser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
         advance();
@@ -24,13 +21,9 @@ public class BasicParser implements Parser {
     }
 
     @Override
-    public List<String> errors() {
-        return Collections.unmodifiableList(errors);
-    }
-
-    @Override
-    public Node.Program parse() {
+    public Result<Node.Program, List<String>> parse() {
         var statements = new ArrayList<Node.Statement>();
+        var errors = new ArrayList<String>();
         while (!(curToken instanceof Token.Eof)) {
             switch (parseStatement()) {
                 case Result.Ok<Node.Statement, String>(var stmt) -> statements.add(stmt);
@@ -38,7 +31,10 @@ public class BasicParser implements Parser {
             }
             advance();
         }
-        return new Node.Program(statements);
+        if (!errors.isEmpty()) {
+            return Result.err(errors);
+        }
+        return Result.ok(new Node.Program(statements));
     }
 
     private Result<Node.Statement, String> parseStatement() {

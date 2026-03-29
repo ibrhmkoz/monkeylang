@@ -2,6 +2,7 @@ package io.github.ibrhmkoz.monkeylang.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -19,10 +20,12 @@ public interface ParserContract {
                 let 838383;
                 """;
 
-        var parser = createParser(input);
-        parser.parse();
+        var result = createParser(input).parse();
 
-        assertEquals(3, parser.errors().size());
+        switch (result) {
+            case Result.Err<Node.Program, List<String>>(var errors) -> assertEquals(3, errors.size());
+            case Result.Ok<Node.Program, List<String>> _ -> fail("expected errors");
+        }
     }
 
     @Test
@@ -34,10 +37,15 @@ public interface ParserContract {
                 return 993322;
                 """;
 
-        var program = createParser(input).parse();
+        var result = createParser(input).parse();
 
-        assertEquals(3, program.statements().size());
-        assertTrue(program.statements().stream().allMatch(s -> s instanceof Node.Statement.Return));
+        switch (result) {
+            case Result.Ok<Node.Program, List<String>>(var program) -> {
+                assertEquals(3, program.statements().size());
+                assertTrue(program.statements().stream().allMatch(s -> s instanceof Node.Statement.Return));
+            }
+            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
+        }
     }
 
     @Test
@@ -49,14 +57,19 @@ public interface ParserContract {
                 let foobar = 838383;
                 """;
 
-        var program = createParser(input).parse();
+        var result = createParser(input).parse();
 
-        assertEquals(3, program.statements().size());
+        switch (result) {
+            case Result.Ok<Node.Program, List<String>>(var program) -> {
+                assertEquals(3, program.statements().size());
 
-        var expectedNames = List.of("x", "y", "foobar");
-        for (int i = 0; i < 3; i++) {
-            var let = (Node.Statement.Let) program.statements().get(i);
-            assertEquals(expectedNames.get(i), let.name());
+                var expectedNames = List.of("x", "y", "foobar");
+                for (int i = 0; i < 3; i++) {
+                    var let = (Node.Statement.Let) program.statements().get(i);
+                    assertEquals(expectedNames.get(i), let.name());
+                }
+            }
+            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
         }
     }
 }
