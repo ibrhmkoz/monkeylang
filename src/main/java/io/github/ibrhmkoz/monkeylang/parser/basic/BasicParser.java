@@ -41,6 +41,25 @@ public class BasicParser implements Parser {
         return switch (curToken) {
             case Token.Let _ -> parseLetStatement();
             case Token.Return _ -> parseReturnStatement();
+            default -> parseExpressionStatement();
+        };
+    }
+
+    private Result<Node.Statement, String> parseExpressionStatement() {
+        return switch (parseExpression()) {
+            case Result.Ok<Node.Expression, String>(var expr) -> {
+                if (peekToken instanceof Token.Semicolon) {
+                    advance();
+                }
+                yield Result.ok(new Node.Statement.Expr(expr));
+            }
+            case Result.Err<Node.Expression, String>(var error) -> Result.err(error);
+        };
+    }
+
+    private Result<Node.Expression, String> parseExpression() {
+        return switch (curToken) {
+            case Token.Ident(var name) -> Result.ok(new Node.Expression.Identifier(name));
             default -> Result.err("unexpected token: " + curToken);
         };
     }

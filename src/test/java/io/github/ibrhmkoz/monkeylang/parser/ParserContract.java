@@ -58,6 +58,23 @@ public interface ParserContract {
     }
 
     @Test
+    default void testExpressionStatement() {
+        var input = "foobar;";
+
+        var result = createParser(input).parse();
+
+        switch (result) {
+            case Result.Ok<Node.Program, List<String>>(var program) -> {
+                assertEquals(1, program.statements().size());
+                var stmt = (Node.Statement.Expr) program.statements().getFirst();
+                var ident = (Node.Expression.Identifier) stmt.expression();
+                assertEquals("foobar", ident.name());
+            }
+            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
+        }
+    }
+
+    @Test
     default void testLetStatements() {
         var input =
                 """
