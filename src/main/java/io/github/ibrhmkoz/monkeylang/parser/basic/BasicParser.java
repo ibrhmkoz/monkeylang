@@ -1,7 +1,9 @@
 package io.github.ibrhmkoz.monkeylang.parser.basic;
 
 import io.github.ibrhmkoz.lib.result.Result;
+import io.github.ibrhmkoz.monkeylang.ast.InfixOperator;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
+import io.github.ibrhmkoz.monkeylang.ast.PrefixOperator;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
@@ -108,8 +110,8 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expression, String> parsePrefixExpression() {
         var operator = switch (curToken) {
-            case Token.Minus _ -> Node.Expression.PrefixOperator.NEGATE;
-            case Token.Bang _ -> Node.Expression.PrefixOperator.NOT;
+            case Token.Minus _ -> PrefixOperator.NEGATE;
+            case Token.Bang _ -> PrefixOperator.NOT;
             default -> throw new IllegalStateException("unexpected prefix token: " + curToken);
         };
         advance();
@@ -140,14 +142,14 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expression, String> parseInfix(Node.Expression left) {
         var operator = switch (curToken) {
-            case Token.Plus _ -> Node.Expression.InfixOperator.ADD;
-            case Token.Minus _ -> Node.Expression.InfixOperator.SUBTRACT;
-            case Token.Asterisk _ -> Node.Expression.InfixOperator.MULTIPLY;
-            case Token.Slash _ -> Node.Expression.InfixOperator.DIVIDE;
-            case Token.Eq _ -> Node.Expression.InfixOperator.EQUAL;
-            case Token.NotEq _ -> Node.Expression.InfixOperator.NOT_EQUAL;
-            case Token.LessThan _ -> Node.Expression.InfixOperator.LESS_THAN;
-            case Token.GreaterThan _ -> Node.Expression.InfixOperator.GREATER_THAN;
+            case Token.Plus _ -> InfixOperator.ADD;
+            case Token.Minus _ -> InfixOperator.SUBTRACT;
+            case Token.Asterisk _ -> InfixOperator.MULTIPLY;
+            case Token.Slash _ -> InfixOperator.DIVIDE;
+            case Token.Eq _ -> InfixOperator.EQUAL;
+            case Token.NotEq _ -> InfixOperator.NOT_EQUAL;
+            case Token.LessThan _ -> InfixOperator.LESS_THAN;
+            case Token.GreaterThan _ -> InfixOperator.GREATER_THAN;
             default -> throw new IllegalStateException("unexpected infix token: " + curToken);
         };
         var precedence = Precedence.of(curToken);

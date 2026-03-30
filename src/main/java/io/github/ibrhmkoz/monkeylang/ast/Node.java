@@ -59,44 +59,6 @@ public sealed interface Node {
             }
         }
 
-        enum PrefixOperator {
-            NEGATE("-"),
-            NOT("!");
-
-            private final String symbol;
-
-            PrefixOperator(String symbol) {
-                this.symbol = symbol;
-            }
-
-            @Override
-            public String toString() {
-                return symbol;
-            }
-        }
-
-        enum InfixOperator {
-            ADD("+"),
-            SUBTRACT("-"),
-            MULTIPLY("*"),
-            DIVIDE("/"),
-            EQUAL("=="),
-            NOT_EQUAL("!="),
-            LESS_THAN("<"),
-            GREATER_THAN(">");
-
-            private final String symbol;
-
-            InfixOperator(String symbol) {
-                this.symbol = symbol;
-            }
-
-            @Override
-            public String toString() {
-                return symbol;
-            }
-        }
-
         record Prefix(PrefixOperator operator, Expression right) implements Expression {
             @Override
             public String unparse() {
