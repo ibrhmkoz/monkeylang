@@ -14,7 +14,7 @@ public interface ParserContract {
     Parser createParser(String input);
 
     @Test
-    default void testLetStatementErrors() {
+    default void testLetStmtErrors() {
         var input = """
                 let x 5;
                 let = 10;
@@ -30,7 +30,7 @@ public interface ParserContract {
     }
 
     @Test
-    default void testReturnStatements() {
+    default void testReturnStmts() {
         var input = """
                 return 5;
                 return 10;
@@ -121,7 +121,7 @@ public interface ParserContract {
     }
 
     @Test
-    default void testLetStatements() {
+    default void testLetStmts() {
         var input = """
                 let x = 5;
                 let y = 10;
