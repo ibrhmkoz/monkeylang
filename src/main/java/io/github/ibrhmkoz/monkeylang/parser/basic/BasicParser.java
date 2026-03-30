@@ -3,7 +3,7 @@ package io.github.ibrhmkoz.monkeylang.parser.basic;
 import io.github.ibrhmkoz.lib.result.Err;
 import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
-import io.github.ibrhmkoz.monkeylang.ast.InfixOperator;
+import io.github.ibrhmkoz.monkeylang.ast.InfixOp;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
 import io.github.ibrhmkoz.monkeylang.ast.PrefixOperator;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
@@ -91,9 +91,9 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expression, String> parsePrefix() {
         return switch (curToken) {
-            case Token.Ident(var name) -> Result.ok(new Node.Expression.Identifier(name));
-            case Token.Int(var value) -> Result.ok(new Node.Expression.IntegerLiteral(value));
-            case Token.Bool(var value) -> Result.ok(new Node.Expression.BooleanLiteral(value));
+            case Token.Ident(var name) -> Result.ok(new Node.Expression.Ident(name));
+            case Token.Int(var value) -> Result.ok(new Node.Expression.Int(value));
+            case Token.Bool(var value) -> Result.ok(new Node.Expression.Bool(value));
             case Token.Bang _, Token.Minus _ -> parsePrefixExpression();
             case Token.LParen _ -> parseGroupedExpression();
             default -> Result.err("no prefix parser for: " + curToken);
@@ -128,14 +128,14 @@ public class BasicParser implements Parser {
             throw new IllegalStateException("unexpected infix token: " + curToken);
         }
         var operator = switch (op) {
-            case Token.Plus _ -> InfixOperator.ADD;
-            case Token.Minus _ -> InfixOperator.SUBTRACT;
-            case Token.Asterisk _ -> InfixOperator.MULTIPLY;
-            case Token.Slash _ -> InfixOperator.DIVIDE;
-            case Token.Eq _ -> InfixOperator.EQUAL;
-            case Token.NotEq _ -> InfixOperator.NOT_EQUAL;
-            case Token.LessThan _ -> InfixOperator.LESS_THAN;
-            case Token.GreaterThan _ -> InfixOperator.GREATER_THAN;
+            case Token.Plus _ -> InfixOp.ADD;
+            case Token.Minus _ -> InfixOp.SUBTRACT;
+            case Token.Asterisk _ -> InfixOp.MULTIPLY;
+            case Token.Slash _ -> InfixOp.DIVIDE;
+            case Token.Eq _ -> InfixOp.EQUAL;
+            case Token.NotEq _ -> InfixOp.NOT_EQUAL;
+            case Token.LessThan _ -> InfixOp.LESS_THAN;
+            case Token.GreaterThan _ -> InfixOp.GREATER_THAN;
         };
         var rbp = BindingPower.of(op).right();
         advance();

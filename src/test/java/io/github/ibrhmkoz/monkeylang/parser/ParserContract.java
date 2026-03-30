@@ -55,7 +55,7 @@ public interface ParserContract {
     @Test
     default void testUnparse() {
         var program = new Node.Program(List.of(
-            new Node.Statement.Let("myVar", new Node.Expression.Identifier("anotherVar"))
+            new Node.Statement.Let("myVar", new Node.Expression.Ident("anotherVar"))
         ));
 
         assertEquals("let myVar = anotherVar;", program.unparse());
@@ -71,7 +71,7 @@ public interface ParserContract {
             case Ok<Node.Program, List<String>>(var program) -> {
                 assertEquals(1, program.statements().size());
                 var stmt = (Node.Statement.Expr) program.statements().getFirst();
-                var ident = (Node.Expression.Identifier) stmt.expression();
+                var ident = (Node.Expression.Ident) stmt.expression();
                 assertEquals("foobar", ident.name());
             }
             case Err<Node.Program, List<String>> _ -> fail("expected success");

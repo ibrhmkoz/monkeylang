@@ -38,21 +38,21 @@ public sealed interface Node {
     }
 
     sealed interface Expression extends Node {
-        record Identifier(String name) implements Expression {
+        record Ident(String name) implements Expression {
             @Override
             public String unparse() {
                 return name;
             }
         }
 
-        record IntegerLiteral(int value) implements Expression {
+        record Int(int value) implements Expression {
             @Override
             public String unparse() {
                 return Integer.toString(value);
             }
         }
 
-        record BooleanLiteral(boolean value) implements Expression {
+        record Bool(boolean value) implements Expression {
             @Override
             public String unparse() {
                 return Boolean.toString(value);
@@ -66,7 +66,7 @@ public sealed interface Node {
             }
         }
 
-        record Infix(Expression left, InfixOperator operator, Expression right) implements Expression {
+        record Infix(Expression left, InfixOp operator, Expression right) implements Expression {
             @Override
             public String unparse() {
                 return "(" + left.unparse() + " " + operator + " " + right.unparse() + ")";

@@ -1,6 +1,6 @@
 package io.github.ibrhmkoz.monkeylang.ast;
 
-public enum InfixOperator {
+public enum InfixOp {
     ADD("+"),
     SUBTRACT("-"),
     MULTIPLY("*"),
@@ -12,7 +12,7 @@ public enum InfixOperator {
 
     private final String symbol;
 
-    InfixOperator(String symbol) {
+    InfixOp(String symbol) {
         this.symbol = symbol;
     }
 
