@@ -98,10 +98,10 @@ public class BasicParser implements Parser {
         };
     }
 
-    private Result<Node.Expr, String> parsePrefixExpr(Token.PrefixOp prefixOp) {
+    private Result<Node.Expr, String> parsePrefixExpr(Token.PrefixOp op) {
         advance();
         return switch (parseExpr(BindingPower.PREFIX_RIGHT)) {
-            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(prefixOp, right));
+            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(op, right));
             case Err<Node.Expr, String> err -> err;
         };
     }
