@@ -3,9 +3,7 @@ package io.github.ibrhmkoz.monkeylang.parser.basic;
 import io.github.ibrhmkoz.lib.result.Err;
 import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
-import io.github.ibrhmkoz.monkeylang.ast.InfixOp;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
-import io.github.ibrhmkoz.monkeylang.ast.PrefixOp;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
@@ -94,18 +92,13 @@ public class BasicParser implements Parser {
             case Token.Ident(var name) -> Result.ok(new Node.Expr.Ident(name));
             case Token.Int(var value) -> Result.ok(new Node.Expr.Int(value));
             case Token.Bool(var value) -> Result.ok(new Node.Expr.Bool(value));
-            case Token.Bang _, Token.Minus _ -> parsePrefixExpression();
+            case Token.PrefixOp op -> parsePrefixExpression(op);
             case Token.LParen _ -> parseGroupedExpression();
             default -> Result.err("no prefix parser for: " + curToken);
         };
     }
 
-    private Result<Node.Expr, String> parsePrefixExpression() {
-        var operator = switch (curToken) {
-            case Token.Minus _ -> PrefixOp.NEGATE;
-            case Token.Bang _ -> PrefixOp.NOT;
-            default -> throw new IllegalStateException("unexpected prefix token: " + curToken);
-        };
+    private Result<Node.Expr, String> parsePrefixExpression(Token.PrefixOp operator) {
         advance();
         return switch (parseExpression(BindingPower.PREFIX_RIGHT)) {
             case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(operator, right));
@@ -127,20 +120,10 @@ public class BasicParser implements Parser {
         if (!(curToken instanceof Token.InfixOp op)) {
             throw new IllegalStateException("unexpected infix token: " + curToken);
         }
-        var operator = switch (op) {
-            case Token.Plus _ -> InfixOp.ADD;
-            case Token.Minus _ -> InfixOp.SUBTRACT;
-            case Token.Asterisk _ -> InfixOp.MULTIPLY;
-            case Token.Slash _ -> InfixOp.DIVIDE;
-            case Token.Eq _ -> InfixOp.EQUAL;
-            case Token.NotEq _ -> InfixOp.NOT_EQUAL;
-            case Token.LessThan _ -> InfixOp.LESS_THAN;
-            case Token.GreaterThan _ -> InfixOp.GREATER_THAN;
-        };
         var rbp = BindingPower.of(op).right();
         advance();
         return switch (parseExpression(rbp)) {
-            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Infix(left, operator, right));
+            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Infix(left, op, right));
             case Err<Node.Expr, String> err -> err;
         };
     }

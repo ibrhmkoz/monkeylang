@@ -1,5 +1,7 @@
 package io.github.ibrhmkoz.monkeylang.ast;
 
+import io.github.ibrhmkoz.monkeylang.token.Token;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,14 +61,14 @@ public sealed interface Node {
             }
         }
 
-        record Prefix(PrefixOp operator, Expr right) implements Expr {
+        record Prefix(Token.PrefixOp operator, Expr right) implements Expr {
             @Override
             public String unparse() {
                 return "(" + operator + right.unparse() + ")";
             }
         }
 
-        record Infix(Expr left, InfixOp operator, Expr right) implements Expr {
+        record Infix(Expr left, Token.InfixOp operator, Expr right) implements Expr {
             @Override
             public String unparse() {
                 return "(" + left.unparse() + " " + operator + " " + right.unparse() + ")";
