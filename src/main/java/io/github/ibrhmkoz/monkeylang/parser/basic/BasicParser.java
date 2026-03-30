@@ -12,7 +12,7 @@ import java.util.List;
 enum Precedence {
     LOWEST,
     EQUALS,
-    LESSGREATER,
+    LESS_GREATER,
     SUM,
     PRODUCT,
     PREFIX,
@@ -21,7 +21,7 @@ enum Precedence {
     static Precedence of(Token token) {
         return switch (token) {
             case Token.Eq _, Token.NotEq _ -> EQUALS;
-            case Token.LessThan _, Token.GreaterThan _ -> LESSGREATER;
+            case Token.LessThan _, Token.GreaterThan _ -> LESS_GREATER;
             case Token.Plus _, Token.Minus _ -> SUM;
             case Token.Slash _, Token.Asterisk _ -> PRODUCT;
             default -> LOWEST;
@@ -107,7 +107,11 @@ public class BasicParser implements Parser {
     }
 
     private Result<Node.Expression, String> parsePrefixExpression() {
-        var operator = curToken.toString();
+        var operator = switch (curToken) {
+            case Token.Minus _ -> Node.Expression.PrefixOperator.NEGATE;
+            case Token.Bang _ -> Node.Expression.PrefixOperator.NOT;
+            default -> throw new IllegalStateException("unexpected prefix token: " + curToken);
+        };
         advance();
         return switch (parseExpression(Precedence.PREFIX)) {
             case Result.Ok<Node.Expression, String>(var right) ->
@@ -135,7 +139,17 @@ public class BasicParser implements Parser {
     }
 
     private Result<Node.Expression, String> parseInfix(Node.Expression left) {
-        var operator = curToken.toString();
+        var operator = switch (curToken) {
+            case Token.Plus _ -> Node.Expression.InfixOperator.ADD;
+            case Token.Minus _ -> Node.Expression.InfixOperator.SUBTRACT;
+            case Token.Asterisk _ -> Node.Expression.InfixOperator.MULTIPLY;
+            case Token.Slash _ -> Node.Expression.InfixOperator.DIVIDE;
+            case Token.Eq _ -> Node.Expression.InfixOperator.EQUAL;
+            case Token.NotEq _ -> Node.Expression.InfixOperator.NOT_EQUAL;
+            case Token.LessThan _ -> Node.Expression.InfixOperator.LESS_THAN;
+            case Token.GreaterThan _ -> Node.Expression.InfixOperator.GREATER_THAN;
+            default -> throw new IllegalStateException("unexpected infix token: " + curToken);
+        };
         var precedence = Precedence.of(curToken);
         advance();
         return switch (parseExpression(precedence)) {

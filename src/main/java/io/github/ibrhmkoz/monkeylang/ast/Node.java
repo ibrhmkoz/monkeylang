@@ -59,14 +59,52 @@ public sealed interface Node {
             }
         }
 
-        record Prefix(String operator, Expression right) implements Expression {
+        enum PrefixOperator {
+            NEGATE("-"),
+            NOT("!");
+
+            private final String symbol;
+
+            PrefixOperator(String symbol) {
+                this.symbol = symbol;
+            }
+
+            @Override
+            public String toString() {
+                return symbol;
+            }
+        }
+
+        enum InfixOperator {
+            ADD("+"),
+            SUBTRACT("-"),
+            MULTIPLY("*"),
+            DIVIDE("/"),
+            EQUAL("=="),
+            NOT_EQUAL("!="),
+            LESS_THAN("<"),
+            GREATER_THAN(">");
+
+            private final String symbol;
+
+            InfixOperator(String symbol) {
+                this.symbol = symbol;
+            }
+
+            @Override
+            public String toString() {
+                return symbol;
+            }
+        }
+
+        record Prefix(PrefixOperator operator, Expression right) implements Expression {
             @Override
             public String unparse() {
                 return "(" + operator + right.unparse() + ")";
             }
         }
 
-        record Infix(Expression left, String operator, Expression right) implements Expression {
+        record Infix(Expression left, InfixOperator operator, Expression right) implements Expression {
             @Override
             public String unparse() {
                 return "(" + left.unparse() + " " + operator + " " + right.unparse() + ")";
