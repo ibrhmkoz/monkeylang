@@ -13,26 +13,16 @@ import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
-enum Precedence {
-    LOWEST,
-    EQUALS,
-    LESS_GREATER,
-    SUM,
-    PRODUCT,
-    PREFIX,
-    CALL;
+record BindingPower(int left, int right) {
 
-    boolean isLowerThan(Precedence other) {
-        return this.compareTo(other) < 0;
-    }
+    static final int PREFIX_RIGHT = 10;
 
-    static Precedence of(Token token) {
-        return switch (token) {
-            case Token.Eq _, Token.NotEq _ -> EQUALS;
-            case Token.LessThan _, Token.GreaterThan _ -> LESS_GREATER;
-            case Token.Plus _, Token.Minus _ -> SUM;
-            case Token.Slash _, Token.Asterisk _ -> PRODUCT;
-            default -> LOWEST;
+    static BindingPower of(Token.InfixOp op) {
+        return switch (op) {
+            case Token.Eq _, Token.NotEq _         -> new BindingPower(2, 3);
+            case Token.LessThan _, Token.GreaterThan _ -> new BindingPower(4, 5);
+            case Token.Plus _, Token.Minus _        -> new BindingPower(6, 7);
+            case Token.Asterisk _, Token.Slash _    -> new BindingPower(8, 9);
         };
     }
 }
@@ -75,7 +65,7 @@ public class BasicParser implements Parser {
     }
 
     private Result<Node.Statement, String> parseExpressionStatement() {
-        return switch (parseExpression(Precedence.LOWEST)) {
+        return switch (parseExpression(0)) {
             case Ok<Node.Expression, String>(var expr) -> {
                 if (peekToken instanceof Token.Semicolon) {
                     advance();
@@ -86,13 +76,12 @@ public class BasicParser implements Parser {
         };
     }
 
-    private Result<Node.Expression, String> parseExpression(Precedence precedence) {
+    private Result<Node.Expression, String> parseExpression(int bp) {
         var left = parsePrefix();
 
         while (left instanceof Ok<Node.Expression, String>(var expr)
-            && !(peekToken instanceof Token.Semicolon)
-            && hasInfix(peekToken)
-            && precedence.isLowerThan(Precedence.of(peekToken))) {
+            && peekToken instanceof Token.InfixOp op
+            && bp < BindingPower.of(op).left()) {
             advance();
             left = parseInfix(expr);
         }
@@ -118,7 +107,7 @@ public class BasicParser implements Parser {
             default -> throw new IllegalStateException("unexpected prefix token: " + curToken);
         };
         advance();
-        return switch (parseExpression(Precedence.PREFIX)) {
+        return switch (parseExpression(BindingPower.PREFIX_RIGHT)) {
             case Ok<Node.Expression, String>(var right) ->
                 Result.ok(new Node.Expression.Prefix(operator, right));
             case Err<Node.Expression, String> err -> err;
@@ -127,7 +116,7 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expression, String> parseGroupedExpression() {
         advance();
-        var expr = parseExpression(Precedence.LOWEST);
+        var expr = parseExpression(0);
         if (!(peekToken instanceof Token.RParen)) {
             return Result.err("expected ), got: " + peekToken);
         }
@@ -135,16 +124,11 @@ public class BasicParser implements Parser {
         return expr;
     }
 
-    private boolean hasInfix(Token token) {
-        return switch (token) {
-            case Token.Plus _, Token.Minus _, Token.Slash _, Token.Asterisk _,
-                 Token.Eq _, Token.NotEq _, Token.LessThan _, Token.GreaterThan _ -> true;
-            default -> false;
-        };
-    }
-
     private Result<Node.Expression, String> parseInfix(Node.Expression left) {
-        var operator = switch (curToken) {
+        if (!(curToken instanceof Token.InfixOp op)) {
+            throw new IllegalStateException("unexpected infix token: " + curToken);
+        }
+        var operator = switch (op) {
             case Token.Plus _ -> InfixOperator.ADD;
             case Token.Minus _ -> InfixOperator.SUBTRACT;
             case Token.Asterisk _ -> InfixOperator.MULTIPLY;
@@ -153,11 +137,10 @@ public class BasicParser implements Parser {
             case Token.NotEq _ -> InfixOperator.NOT_EQUAL;
             case Token.LessThan _ -> InfixOperator.LESS_THAN;
             case Token.GreaterThan _ -> InfixOperator.GREATER_THAN;
-            default -> throw new IllegalStateException("unexpected infix token: " + curToken);
         };
-        var precedence = Precedence.of(curToken);
+        var rbp = BindingPower.of(op).right();
         advance();
-        return switch (parseExpression(precedence)) {
+        return switch (parseExpression(rbp)) {
             case Ok<Node.Expression, String>(var right) ->
                 Result.ok(new Node.Expression.Infix(left, operator, right));
             case Err<Node.Expression, String> err -> err;

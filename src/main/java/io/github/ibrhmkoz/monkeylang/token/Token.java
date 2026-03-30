@@ -1,6 +1,8 @@
 package io.github.ibrhmkoz.monkeylang.token;
 
 public sealed interface Token {
+
+    sealed interface InfixOp extends Token permits Plus, Minus, Asterisk, Slash, Eq, NotEq, LessThan, GreaterThan {}
     record Ident(String name) implements Token {}
 
     record Int(int value) implements Token {}
@@ -18,7 +20,7 @@ public sealed interface Token {
         }
     }
 
-    enum Eq implements Token {
+    enum Eq implements InfixOp {
         INSTANCE;
 
         @Override
@@ -27,7 +29,7 @@ public sealed interface Token {
         }
     }
 
-    enum NotEq implements Token {
+    enum NotEq implements InfixOp {
         INSTANCE;
 
         @Override
@@ -36,7 +38,7 @@ public sealed interface Token {
         }
     }
 
-    enum Plus implements Token {
+    enum Plus implements InfixOp {
         INSTANCE;
 
         @Override
@@ -45,7 +47,7 @@ public sealed interface Token {
         }
     }
 
-    enum Minus implements Token {
+    enum Minus implements InfixOp {
         INSTANCE;
 
         @Override
@@ -63,7 +65,7 @@ public sealed interface Token {
         }
     }
 
-    enum Asterisk implements Token {
+    enum Asterisk implements InfixOp {
         INSTANCE;
 
         @Override
@@ -72,7 +74,7 @@ public sealed interface Token {
         }
     }
 
-    enum Slash implements Token {
+    enum Slash implements InfixOp {
         INSTANCE;
 
         @Override
@@ -81,7 +83,7 @@ public sealed interface Token {
         }
     }
 
-    enum LessThan implements Token {
+    enum LessThan implements InfixOp {
         INSTANCE;
 
         @Override
@@ -90,7 +92,7 @@ public sealed interface Token {
         }
     }
 
-    enum GreaterThan implements Token {
+    enum GreaterThan implements InfixOp {
         INSTANCE;
 
         @Override
