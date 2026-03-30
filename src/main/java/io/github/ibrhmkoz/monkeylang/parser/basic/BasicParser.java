@@ -20,6 +20,10 @@ enum Precedence {
     PREFIX,
     CALL;
 
+    boolean isLowerThan(Precedence other) {
+        return this.compareTo(other) < 0;
+    }
+
     static Precedence of(Token token) {
         return switch (token) {
             case Token.Eq _, Token.NotEq _ -> EQUALS;
@@ -86,7 +90,7 @@ public class BasicParser implements Parser {
             return left;
         }
 
-        while (!(peekToken instanceof Token.Semicolon) && precedence.compareTo(Precedence.of(peekToken)) < 0) {
+        while (!(peekToken instanceof Token.Semicolon) && precedence.isLowerThan(Precedence.of(peekToken))) {
             if (!hasInfix(peekToken)) {
                 return left;
             }
