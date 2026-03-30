@@ -7,6 +7,7 @@ import io.github.ibrhmkoz.monkeylang.ast.Node;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +78,8 @@ public class BasicParser implements Parser {
         var left = parsePrefix();
 
         while (left instanceof Ok<Node.Expr, String>(var expr)
-                && peekToken instanceof Token.InfixOp op
-                && bp < BindingPower.of(op).left()) {
+            && peekToken instanceof Token.InfixOp op
+            && bp < BindingPower.of(op).left()) {
             advance();
             left = parseInfix(expr);
         }
@@ -97,10 +98,10 @@ public class BasicParser implements Parser {
         };
     }
 
-    private Result<Node.Expr, String> parsePrefixExpr(Token.PrefixOp operator) {
+    private Result<Node.Expr, String> parsePrefixExpr(Token.PrefixOp prefixOp) {
         advance();
         return switch (parseExpr(BindingPower.PREFIX_RIGHT)) {
-            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(operator, right));
+            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(prefixOp, right));
             case Err<Node.Expr, String> err -> err;
         };
     }
