@@ -1,7 +1,6 @@
 package io.github.ibrhmkoz.monkeylang.ast;
 
 import io.github.ibrhmkoz.monkeylang.token.Token;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -6,9 +6,7 @@ import io.github.ibrhmkoz.lib.result.Err;
 import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
 import io.github.ibrhmkoz.monkeylang.ast.PolishNotation;
-
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 public interface ParserContract {
@@ -17,8 +15,7 @@ public interface ParserContract {
 
     @Test
     default void testLetStatementErrors() {
-        var input =
-            """
+        var input = """
                 let x 5;
                 let = 10;
                 let 838383;
@@ -34,8 +31,7 @@ public interface ParserContract {
 
     @Test
     default void testReturnStatements() {
-        var input =
-            """
+        var input = """
                 return 5;
                 return 10;
                 return 993322;
@@ -54,15 +50,13 @@ public interface ParserContract {
 
     @Test
     default void testUnparse() {
-        var program = new Node.Program(List.of(
-            new Node.Stmt.Let("myVar", new Node.Expr.Ident("anotherVar"))
-        ));
+        var program = new Node.Program(List.of(new Node.Stmt.Let("myVar", new Node.Expr.Ident("anotherVar"))));
 
         assertEquals("let myVar = anotherVar;", program.unparse());
     }
 
     @Test
-    default void testExpressionStatement() {
+    default void testExprStmt() {
         var input = "foobar;";
 
         var result = createParser(input).parse();
@@ -91,27 +85,26 @@ public interface ParserContract {
     @Test
     default void testOperatorPrecedenceParsing() {
         var cases = List.of(
-            Case.given("-a * b").expect("(* (- a) b)"),
-            Case.given("!-a").expect("(! (- a))"),
-            Case.given("a + b + c").expect("(+ (+ a b) c)"),
-            Case.given("a + b - c").expect("(- (+ a b) c)"),
-            Case.given("a * b * c").expect("(* (* a b) c)"),
-            Case.given("a * b / c").expect("(/ (* a b) c)"),
-            Case.given("a + b / c").expect("(+ a (/ b c))"),
-            Case.given("a + b * c + d / e - f").expect("(- (+ (+ a (* b c)) (/ d e)) f)"),
-            Case.given("5 > 4 == 3 < 4").expect("(== (> 5 4) (< 3 4))"),
-            Case.given("5 < 4 != 3 > 4").expect("(!= (< 5 4) (> 3 4))"),
-            Case.given("3 + 4 * 5 == 3 * 1 + 4 * 5").expect("(== (+ 3 (* 4 5)) (+ (* 3 1) (* 4 5)))"),
-            Case.given("true").expect("true"),
-            Case.given("false").expect("false"),
-            Case.given("3 > 5 == false").expect("(== (> 3 5) false)"),
-            Case.given("3 < 5 == true").expect("(== (< 3 5) true)"),
-            Case.given("1 + (2 + 3) + 4").expect("(+ (+ 1 (+ 2 3)) 4)"),
-            Case.given("(5 + 5) * 2").expect("(* (+ 5 5) 2)"),
-            Case.given("2 / (5 + 5)").expect("(/ 2 (+ 5 5))"),
-            Case.given("-(5 + 5)").expect("(- (+ 5 5))"),
-            Case.given("!(true == true)").expect("(! (== true true))")
-        );
+                Case.given("-a * b").expect("(* (- a) b)"),
+                Case.given("!-a").expect("(! (- a))"),
+                Case.given("a + b + c").expect("(+ (+ a b) c)"),
+                Case.given("a + b - c").expect("(- (+ a b) c)"),
+                Case.given("a * b * c").expect("(* (* a b) c)"),
+                Case.given("a * b / c").expect("(/ (* a b) c)"),
+                Case.given("a + b / c").expect("(+ a (/ b c))"),
+                Case.given("a + b * c + d / e - f").expect("(- (+ (+ a (* b c)) (/ d e)) f)"),
+                Case.given("5 > 4 == 3 < 4").expect("(== (> 5 4) (< 3 4))"),
+                Case.given("5 < 4 != 3 > 4").expect("(!= (< 5 4) (> 3 4))"),
+                Case.given("3 + 4 * 5 == 3 * 1 + 4 * 5").expect("(== (+ 3 (* 4 5)) (+ (* 3 1) (* 4 5)))"),
+                Case.given("true").expect("true"),
+                Case.given("false").expect("false"),
+                Case.given("3 > 5 == false").expect("(== (> 3 5) false)"),
+                Case.given("3 < 5 == true").expect("(== (< 3 5) true)"),
+                Case.given("1 + (2 + 3) + 4").expect("(+ (+ 1 (+ 2 3)) 4)"),
+                Case.given("(5 + 5) * 2").expect("(* (+ 5 5) 2)"),
+                Case.given("2 / (5 + 5)").expect("(/ 2 (+ 5 5))"),
+                Case.given("-(5 + 5)").expect("(- (+ 5 5))"),
+                Case.given("!(true == true)").expect("(! (== true true))"));
 
         for (var c : cases) {
             var result = createParser(c.input()).parse();
@@ -129,8 +122,7 @@ public interface ParserContract {
 
     @Test
     default void testLetStatements() {
-        var input =
-            """
+        var input = """
                 let x = 5;
                 let y = 10;
                 let foobar = 838383;

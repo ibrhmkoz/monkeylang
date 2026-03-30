@@ -5,6 +5,7 @@ public sealed interface Token {
     sealed interface InfixOp extends Token permits Plus, Minus, Asterisk, Slash, Eq, NotEq, LessThan, GreaterThan {}
 
     sealed interface PrefixOp extends Token permits Bang, Minus {}
+
     record Ident(String name) implements Token {}
 
     record Int(int value) implements Token {}
@@ -174,7 +175,6 @@ public sealed interface Token {
             return "let";
         }
     }
-
 
     enum If implements Token {
         INSTANCE;
