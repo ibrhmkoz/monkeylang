@@ -1,12 +1,12 @@
 package io.github.ibrhmkoz.monkeylang.ast;
 
-public enum PrefixOperator {
+public enum PrefixOp {
     NEGATE("-"),
     NOT("!");
 
     private final String symbol;
 
-    PrefixOperator(String symbol) {
+    PrefixOp(String symbol) {
         this.symbol = symbol;
     }
 

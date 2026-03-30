@@ -45,8 +45,8 @@ public interface ParserContract {
 
         switch (result) {
             case Ok<Node.Program, List<String>>(var program) -> {
-                assertEquals(3, program.statements().size());
-                assertTrue(program.statements().stream().allMatch(s -> s instanceof Node.Statement.Return));
+                assertEquals(3, program.stmts().size());
+                assertTrue(program.stmts().stream().allMatch(s -> s instanceof Node.Stmt.Return));
             }
             case Err<Node.Program, List<String>> _ -> fail("expected success");
         }
@@ -55,7 +55,7 @@ public interface ParserContract {
     @Test
     default void testUnparse() {
         var program = new Node.Program(List.of(
-            new Node.Statement.Let("myVar", new Node.Expression.Ident("anotherVar"))
+            new Node.Stmt.Let("myVar", new Node.Expr.Ident("anotherVar"))
         ));
 
         assertEquals("let myVar = anotherVar;", program.unparse());
@@ -69,9 +69,9 @@ public interface ParserContract {
 
         switch (result) {
             case Ok<Node.Program, List<String>>(var program) -> {
-                assertEquals(1, program.statements().size());
-                var stmt = (Node.Statement.Expr) program.statements().getFirst();
-                var ident = (Node.Expression.Ident) stmt.expression();
+                assertEquals(1, program.stmts().size());
+                var stmt = (Node.Stmt.Expr) program.stmts().getFirst();
+                var ident = (Node.Expr.Ident) stmt.expr();
                 assertEquals("foobar", ident.name());
             }
             case Err<Node.Program, List<String>> _ -> fail("expected success");
@@ -118,7 +118,7 @@ public interface ParserContract {
 
             switch (result) {
                 case Ok<Node.Program, List<String>>(var program) -> {
-                    var expr = ((Node.Statement.Expr) program.statements().getFirst()).expression();
+                    var expr = ((Node.Stmt.Expr) program.stmts().getFirst()).expr();
                     assertEquals(c.expected(), PolishNotation.convert(expr));
                 }
                 case Err<Node.Program, List<String>>(var errors) ->
@@ -140,11 +140,11 @@ public interface ParserContract {
 
         switch (result) {
             case Ok<Node.Program, List<String>>(var program) -> {
-                assertEquals(3, program.statements().size());
+                assertEquals(3, program.stmts().size());
 
                 var expectedNames = List.of("x", "y", "foobar");
                 for (int i = 0; i < 3; i++) {
-                    var let = (Node.Statement.Let) program.statements().get(i);
+                    var let = (Node.Stmt.Let) program.stmts().get(i);
                     assertEquals(expectedNames.get(i), let.name());
                 }
             }

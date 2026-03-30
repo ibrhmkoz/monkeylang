@@ -7,66 +7,66 @@ public sealed interface Node {
 
     String unparse();
 
-    record Program(List<Statement> statements) implements Node {
+    record Program(List<Stmt> stmts) implements Node {
         @Override
         public String unparse() {
-            return statements.stream().map(Statement::unparse).collect(Collectors.joining());
+            return stmts.stream().map(Stmt::unparse).collect(Collectors.joining());
         }
     }
 
-    sealed interface Statement extends Node {
-        record Let(String name, Expression value) implements Statement {
+    sealed interface Stmt extends Node {
+        record Let(String name, Node.Expr value) implements Stmt {
             @Override
             public String unparse() {
                 return "let " + name + " = " + value.unparse() + ";";
             }
         }
 
-        record Return(Expression value) implements Statement {
+        record Return(Node.Expr value) implements Stmt {
             @Override
             public String unparse() {
                 return "return " + value.unparse() + ";";
             }
         }
 
-        record Expr(Expression expression) implements Statement {
+        record Expr(Node.Expr expr) implements Stmt {
             @Override
             public String unparse() {
-                return expression.unparse();
+                return expr.unparse();
             }
         }
     }
 
-    sealed interface Expression extends Node {
-        record Ident(String name) implements Expression {
+    sealed interface Expr extends Node {
+        record Ident(String name) implements Expr {
             @Override
             public String unparse() {
                 return name;
             }
         }
 
-        record Int(int value) implements Expression {
+        record Int(int value) implements Expr {
             @Override
             public String unparse() {
                 return Integer.toString(value);
             }
         }
 
-        record Bool(boolean value) implements Expression {
+        record Bool(boolean value) implements Expr {
             @Override
             public String unparse() {
                 return Boolean.toString(value);
             }
         }
 
-        record Prefix(PrefixOperator operator, Expression right) implements Expression {
+        record Prefix(PrefixOp operator, Expr right) implements Expr {
             @Override
             public String unparse() {
                 return "(" + operator + right.unparse() + ")";
             }
         }
 
-        record Infix(Expression left, InfixOp operator, Expression right) implements Expression {
+        record Infix(Expr left, InfixOp operator, Expr right) implements Expr {
             @Override
             public String unparse() {
                 return "(" + left.unparse() + " " + operator + " " + right.unparse() + ")";

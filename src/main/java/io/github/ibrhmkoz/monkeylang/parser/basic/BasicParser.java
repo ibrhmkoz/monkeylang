@@ -5,7 +5,7 @@ import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.ast.InfixOp;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
-import io.github.ibrhmkoz.monkeylang.ast.PrefixOperator;
+import io.github.ibrhmkoz.monkeylang.ast.PrefixOp;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
@@ -41,12 +41,12 @@ public class BasicParser implements Parser {
 
     @Override
     public Result<Node.Program, List<String>> parse() {
-        var statements = new ArrayList<Node.Statement>();
+        var statements = new ArrayList<Node.Stmt>();
         var errors = new ArrayList<String>();
         while (!(curToken instanceof Token.Eof)) {
             switch (parseStatement()) {
-                case Ok<Node.Statement, String>(var stmt) -> statements.add(stmt);
-                case Err<Node.Statement, String>(var error) -> errors.add(error);
+                case Ok<Node.Stmt, String>(var stmt) -> statements.add(stmt);
+                case Err<Node.Stmt, String>(var error) -> errors.add(error);
             }
             advance();
         }
@@ -56,7 +56,7 @@ public class BasicParser implements Parser {
         return Result.ok(new Node.Program(statements));
     }
 
-    private Result<Node.Statement, String> parseStatement() {
+    private Result<Node.Stmt, String> parseStatement() {
         return switch (curToken) {
             case Token.Let _ -> parseLetStatement();
             case Token.Return _ -> parseReturnStatement();
@@ -64,22 +64,22 @@ public class BasicParser implements Parser {
         };
     }
 
-    private Result<Node.Statement, String> parseExpressionStatement() {
+    private Result<Node.Stmt, String> parseExpressionStatement() {
         return switch (parseExpression(0)) {
-            case Ok<Node.Expression, String>(var expr) -> {
+            case Ok<Node.Expr, String>(var expr) -> {
                 if (peekToken instanceof Token.Semicolon) {
                     advance();
                 }
-                yield Result.ok(new Node.Statement.Expr(expr));
+                yield Result.ok(new Node.Stmt.Expr(expr));
             }
-            case Err<Node.Expression, String>(var error) -> Result.err(error);
+            case Err<Node.Expr, String>(var error) -> Result.err(error);
         };
     }
 
-    private Result<Node.Expression, String> parseExpression(int bp) {
+    private Result<Node.Expr, String> parseExpression(int bp) {
         var left = parsePrefix();
 
-        while (left instanceof Ok<Node.Expression, String>(var expr)
+        while (left instanceof Ok<Node.Expr, String>(var expr)
             && peekToken instanceof Token.InfixOp op
             && bp < BindingPower.of(op).left()) {
             advance();
@@ -89,31 +89,31 @@ public class BasicParser implements Parser {
         return left;
     }
 
-    private Result<Node.Expression, String> parsePrefix() {
+    private Result<Node.Expr, String> parsePrefix() {
         return switch (curToken) {
-            case Token.Ident(var name) -> Result.ok(new Node.Expression.Ident(name));
-            case Token.Int(var value) -> Result.ok(new Node.Expression.Int(value));
-            case Token.Bool(var value) -> Result.ok(new Node.Expression.Bool(value));
+            case Token.Ident(var name) -> Result.ok(new Node.Expr.Ident(name));
+            case Token.Int(var value) -> Result.ok(new Node.Expr.Int(value));
+            case Token.Bool(var value) -> Result.ok(new Node.Expr.Bool(value));
             case Token.Bang _, Token.Minus _ -> parsePrefixExpression();
             case Token.LParen _ -> parseGroupedExpression();
             default -> Result.err("no prefix parser for: " + curToken);
         };
     }
 
-    private Result<Node.Expression, String> parsePrefixExpression() {
+    private Result<Node.Expr, String> parsePrefixExpression() {
         var operator = switch (curToken) {
-            case Token.Minus _ -> PrefixOperator.NEGATE;
-            case Token.Bang _ -> PrefixOperator.NOT;
+            case Token.Minus _ -> PrefixOp.NEGATE;
+            case Token.Bang _ -> PrefixOp.NOT;
             default -> throw new IllegalStateException("unexpected prefix token: " + curToken);
         };
         advance();
         return switch (parseExpression(BindingPower.PREFIX_RIGHT)) {
-            case Ok<Node.Expression, String>(var right) -> Result.ok(new Node.Expression.Prefix(operator, right));
-            case Err<Node.Expression, String> err -> err;
+            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Prefix(operator, right));
+            case Err<Node.Expr, String> err -> err;
         };
     }
 
-    private Result<Node.Expression, String> parseGroupedExpression() {
+    private Result<Node.Expr, String> parseGroupedExpression() {
         advance();
         var expr = parseExpression(0);
         if (!(peekToken instanceof Token.RParen)) {
@@ -123,7 +123,7 @@ public class BasicParser implements Parser {
         return expr;
     }
 
-    private Result<Node.Expression, String> parseInfix(Node.Expression left) {
+    private Result<Node.Expr, String> parseInfix(Node.Expr left) {
         if (!(curToken instanceof Token.InfixOp op)) {
             throw new IllegalStateException("unexpected infix token: " + curToken);
         }
@@ -140,12 +140,12 @@ public class BasicParser implements Parser {
         var rbp = BindingPower.of(op).right();
         advance();
         return switch (parseExpression(rbp)) {
-            case Ok<Node.Expression, String>(var right) -> Result.ok(new Node.Expression.Infix(left, operator, right));
-            case Err<Node.Expression, String> err -> err;
+            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Infix(left, operator, right));
+            case Err<Node.Expr, String> err -> err;
         };
     }
 
-    private Result<Node.Statement, String> parseLetStatement() {
+    private Result<Node.Stmt, String> parseLetStatement() {
         if (!(peekToken instanceof Token.Ident(String name))) {
             skipToSemicolon();
             return Result.err("expected identifier, got: " + peekToken);
@@ -160,13 +160,13 @@ public class BasicParser implements Parser {
         advance();
         skipToSemicolon();
 
-        return Result.ok(new Node.Statement.Let(name, null));
+        return Result.ok(new Node.Stmt.Let(name, null));
     }
 
-    private Result<Node.Statement, String> parseReturnStatement() {
+    private Result<Node.Stmt, String> parseReturnStatement() {
         advance();
         skipToSemicolon();
-        return Result.ok(new Node.Statement.Return(null));
+        return Result.ok(new Node.Stmt.Return(null));
     }
 
     private void skipToSemicolon() {
