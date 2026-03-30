@@ -90,10 +90,7 @@ public class BasicParser implements Parser {
             return left;
         }
 
-        while (!(peekToken instanceof Token.Semicolon) && precedence.isLowerThan(Precedence.of(peekToken))) {
-            if (!hasInfix(peekToken)) {
-                return left;
-            }
+        while (!(peekToken instanceof Token.Semicolon) && hasInfix(peekToken) && precedence.isLowerThan(Precedence.of(peekToken))) {
             advance();
             left = parseInfix(((Result.Ok<Node.Expression, String>) left).value());
         }
