@@ -2,7 +2,8 @@ package io.github.ibrhmkoz.monkeylang.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.github.ibrhmkoz.lib.result.Result;
+import io.github.ibrhmkoz.lib.result.Err;
+import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
 import io.github.ibrhmkoz.monkeylang.ast.PolishNotation;
 
@@ -26,8 +27,8 @@ public interface ParserContract {
         var result = createParser(input).parse();
 
         switch (result) {
-            case Result.Err<Node.Program, List<String>>(var errors) -> assertEquals(3, errors.size());
-            case Result.Ok<Node.Program, List<String>> _ -> fail("expected errors");
+            case Err<Node.Program, List<String>>(var errors) -> assertEquals(3, errors.size());
+            case Ok<Node.Program, List<String>> _ -> fail("expected errors");
         }
     }
 
@@ -43,11 +44,11 @@ public interface ParserContract {
         var result = createParser(input).parse();
 
         switch (result) {
-            case Result.Ok<Node.Program, List<String>>(var program) -> {
+            case Ok<Node.Program, List<String>>(var program) -> {
                 assertEquals(3, program.statements().size());
                 assertTrue(program.statements().stream().allMatch(s -> s instanceof Node.Statement.Return));
             }
-            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
+            case Err<Node.Program, List<String>> _ -> fail("expected success");
         }
     }
 
@@ -67,13 +68,13 @@ public interface ParserContract {
         var result = createParser(input).parse();
 
         switch (result) {
-            case Result.Ok<Node.Program, List<String>>(var program) -> {
+            case Ok<Node.Program, List<String>>(var program) -> {
                 assertEquals(1, program.statements().size());
                 var stmt = (Node.Statement.Expr) program.statements().getFirst();
                 var ident = (Node.Expression.Identifier) stmt.expression();
                 assertEquals("foobar", ident.name());
             }
-            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
+            case Err<Node.Program, List<String>> _ -> fail("expected success");
         }
     }
 
@@ -116,11 +117,11 @@ public interface ParserContract {
             var result = createParser(c.input()).parse();
 
             switch (result) {
-                case Result.Ok<Node.Program, List<String>>(var program) -> {
+                case Ok<Node.Program, List<String>>(var program) -> {
                     var expr = ((Node.Statement.Expr) program.statements().getFirst()).expression();
                     assertEquals(c.expected(), PolishNotation.convert(expr));
                 }
-                case Result.Err<Node.Program, List<String>>(var errors) ->
+                case Err<Node.Program, List<String>>(var errors) ->
                     fail("expected success for '%s', got errors: %s".formatted(c.input(), errors));
             }
         }
@@ -138,7 +139,7 @@ public interface ParserContract {
         var result = createParser(input).parse();
 
         switch (result) {
-            case Result.Ok<Node.Program, List<String>>(var program) -> {
+            case Ok<Node.Program, List<String>>(var program) -> {
                 assertEquals(3, program.statements().size());
 
                 var expectedNames = List.of("x", "y", "foobar");
@@ -147,7 +148,7 @@ public interface ParserContract {
                     assertEquals(expectedNames.get(i), let.name());
                 }
             }
-            case Result.Err<Node.Program, List<String>> _ -> fail("expected success");
+            case Err<Node.Program, List<String>> _ -> fail("expected success");
         }
     }
 }

@@ -1,9 +1,6 @@
 package io.github.ibrhmkoz.lib.result;
 
-public sealed interface Result<T, E> permits Result.Ok, Result.Err {
-    record Ok<T, E>(T value) implements Result<T, E> {}
-
-    record Err<T, E>(E error) implements Result<T, E> {}
+public sealed interface Result<T, E> permits Ok, Err {
 
     static <T, E> Result<T, E> ok(T value) {
         return new Ok<>(value);

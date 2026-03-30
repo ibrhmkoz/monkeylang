@@ -1,5 +1,7 @@
 package io.github.ibrhmkoz.monkeylang.parser.basic;
 
+import io.github.ibrhmkoz.lib.result.Err;
+import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.ast.InfixOperator;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
@@ -53,8 +55,8 @@ public class BasicParser implements Parser {
         var errors = new ArrayList<String>();
         while (!(curToken instanceof Token.Eof)) {
             switch (parseStatement()) {
-                case Result.Ok<Node.Statement, String>(var stmt) -> statements.add(stmt);
-                case Result.Err<Node.Statement, String>(var error) -> errors.add(error);
+                case Ok<Node.Statement, String>(var stmt) -> statements.add(stmt);
+                case Err<Node.Statement, String>(var error) -> errors.add(error);
             }
             advance();
         }
@@ -74,20 +76,20 @@ public class BasicParser implements Parser {
 
     private Result<Node.Statement, String> parseExpressionStatement() {
         return switch (parseExpression(Precedence.LOWEST)) {
-            case Result.Ok<Node.Expression, String>(var expr) -> {
+            case Ok<Node.Expression, String>(var expr) -> {
                 if (peekToken instanceof Token.Semicolon) {
                     advance();
                 }
                 yield Result.ok(new Node.Statement.Expr(expr));
             }
-            case Result.Err<Node.Expression, String>(var error) -> Result.err(error);
+            case Err<Node.Expression, String>(var error) -> Result.err(error);
         };
     }
 
     private Result<Node.Expression, String> parseExpression(Precedence precedence) {
         var left = parsePrefix();
 
-        while (left instanceof Result.Ok<Node.Expression, String>(var expr)
+        while (left instanceof Ok<Node.Expression, String>(var expr)
             && !(peekToken instanceof Token.Semicolon)
             && hasInfix(peekToken)
             && precedence.isLowerThan(Precedence.of(peekToken))) {
@@ -117,9 +119,9 @@ public class BasicParser implements Parser {
         };
         advance();
         return switch (parseExpression(Precedence.PREFIX)) {
-            case Result.Ok<Node.Expression, String>(var right) ->
+            case Ok<Node.Expression, String>(var right) ->
                 Result.ok(new Node.Expression.Prefix(operator, right));
-            case Result.Err<Node.Expression, String> err -> err;
+            case Err<Node.Expression, String> err -> err;
         };
     }
 
@@ -156,9 +158,9 @@ public class BasicParser implements Parser {
         var precedence = Precedence.of(curToken);
         advance();
         return switch (parseExpression(precedence)) {
-            case Result.Ok<Node.Expression, String>(var right) ->
+            case Ok<Node.Expression, String>(var right) ->
                 Result.ok(new Node.Expression.Infix(left, operator, right));
-            case Result.Err<Node.Expression, String> err -> err;
+            case Err<Node.Expression, String> err -> err;
         };
     }
 

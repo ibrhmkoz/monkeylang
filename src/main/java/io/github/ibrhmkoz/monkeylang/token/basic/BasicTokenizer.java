@@ -1,5 +1,6 @@
 package io.github.ibrhmkoz.monkeylang.token.basic;
 
+import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
 import io.github.ibrhmkoz.monkeylang.token.Token;
 import io.github.ibrhmkoz.monkeylang.token.Tokenizer;
@@ -56,7 +57,7 @@ public class BasicTokenizer implements Tokenizer {
         char ch = input.charAt(i);
 
         if (ch == '=') {
-            if (peekChar() instanceof Result.Ok(Character next) && next == '=') {
+            if (peekChar() instanceof Ok(Character next) && next == '=') {
                 i += 2;
                 return Token.Eq.INSTANCE;
             }
@@ -65,7 +66,7 @@ public class BasicTokenizer implements Tokenizer {
         }
 
         if (ch == '!') {
-            if (peekChar() instanceof Result.Ok(Character next) && next == '=') {
+            if (peekChar() instanceof Ok(Character next) && next == '=') {
                 i += 2;
                 return Token.NotEq.INSTANCE;
             }
