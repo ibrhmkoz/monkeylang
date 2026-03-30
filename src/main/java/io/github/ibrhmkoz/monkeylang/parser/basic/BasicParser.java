@@ -19,10 +19,10 @@ record BindingPower(int left, int right) {
 
     static BindingPower of(Token.InfixOp op) {
         return switch (op) {
-            case Token.Eq _, Token.NotEq _         -> new BindingPower(2, 3);
+            case Token.Eq _, Token.NotEq _ -> new BindingPower(2, 3);
             case Token.LessThan _, Token.GreaterThan _ -> new BindingPower(4, 5);
-            case Token.Plus _, Token.Minus _        -> new BindingPower(6, 7);
-            case Token.Asterisk _, Token.Slash _    -> new BindingPower(8, 9);
+            case Token.Plus _, Token.Minus _ -> new BindingPower(6, 7);
+            case Token.Asterisk _, Token.Slash _ -> new BindingPower(8, 9);
         };
     }
 }
@@ -108,8 +108,7 @@ public class BasicParser implements Parser {
         };
         advance();
         return switch (parseExpression(BindingPower.PREFIX_RIGHT)) {
-            case Ok<Node.Expression, String>(var right) ->
-                Result.ok(new Node.Expression.Prefix(operator, right));
+            case Ok<Node.Expression, String>(var right) -> Result.ok(new Node.Expression.Prefix(operator, right));
             case Err<Node.Expression, String> err -> err;
         };
     }
@@ -141,8 +140,7 @@ public class BasicParser implements Parser {
         var rbp = BindingPower.of(op).right();
         advance();
         return switch (parseExpression(rbp)) {
-            case Ok<Node.Expression, String>(var right) ->
-                Result.ok(new Node.Expression.Infix(left, operator, right));
+            case Ok<Node.Expression, String>(var right) -> Result.ok(new Node.Expression.Infix(left, operator, right));
             case Err<Node.Expression, String> err -> err;
         };
     }
