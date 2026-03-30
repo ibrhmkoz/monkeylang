@@ -86,13 +86,13 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expression, String> parseExpression(Precedence precedence) {
         var left = parsePrefix();
-        if (left instanceof Result.Err<Node.Expression, String>) {
-            return left;
-        }
 
-        while (!(peekToken instanceof Token.Semicolon) && hasInfix(peekToken) && precedence.isLowerThan(Precedence.of(peekToken))) {
+        while (left instanceof Result.Ok<Node.Expression, String>(var expr)
+            && !(peekToken instanceof Token.Semicolon)
+            && hasInfix(peekToken)
+            && precedence.isLowerThan(Precedence.of(peekToken))) {
             advance();
-            left = parseInfix(((Result.Ok<Node.Expression, String>) left).value());
+            left = parseInfix(expr);
         }
 
         return left;
