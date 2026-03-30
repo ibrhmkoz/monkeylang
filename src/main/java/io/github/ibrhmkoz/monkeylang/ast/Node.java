@@ -44,5 +44,33 @@ public sealed interface Node {
                 return name;
             }
         }
+
+        record IntegerLiteral(int value) implements Expression {
+            @Override
+            public String unparse() {
+                return Integer.toString(value);
+            }
+        }
+
+        record BooleanLiteral(boolean value) implements Expression {
+            @Override
+            public String unparse() {
+                return Boolean.toString(value);
+            }
+        }
+
+        record Prefix(String operator, Expression right) implements Expression {
+            @Override
+            public String unparse() {
+                return "(" + operator + right.unparse() + ")";
+            }
+        }
+
+        record Infix(Expression left, String operator, Expression right) implements Expression {
+            @Override
+            public String unparse() {
+                return "(" + left.unparse() + " " + operator + " " + right.unparse() + ")";
+            }
+        }
     }
 }
