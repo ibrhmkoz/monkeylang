@@ -99,8 +99,7 @@ public class BasicParser implements Parser {
         return switch (curToken) {
             case Token.Ident(var name) -> Result.ok(new Node.Expression.Identifier(name));
             case Token.Int(var value) -> Result.ok(new Node.Expression.IntegerLiteral(value));
-            case Token.True _ -> Result.ok(new Node.Expression.BooleanLiteral(true));
-            case Token.False _ -> Result.ok(new Node.Expression.BooleanLiteral(false));
+            case Token.Bool(var value) -> Result.ok(new Node.Expression.BooleanLiteral(value));
             case Token.Bang _, Token.Minus _ -> parsePrefixExpression();
             case Token.LParen _ -> parseGroupedExpression();
             default -> Result.err("no prefix parser for: " + curToken);

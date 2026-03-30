@@ -5,6 +5,8 @@ public sealed interface Token {
 
     record Int(int value) implements Token {}
 
+    record Bool(boolean value) implements Token {}
+
     record Illegal(char ch) implements Token {}
 
     enum Assign implements Token {
@@ -169,23 +171,6 @@ public sealed interface Token {
         }
     }
 
-    enum True implements Token {
-        INSTANCE;
-
-        @Override
-        public String toString() {
-            return "true";
-        }
-    }
-
-    enum False implements Token {
-        INSTANCE;
-
-        @Override
-        public String toString() {
-            return "false";
-        }
-    }
 
     enum If implements Token {
         INSTANCE;
