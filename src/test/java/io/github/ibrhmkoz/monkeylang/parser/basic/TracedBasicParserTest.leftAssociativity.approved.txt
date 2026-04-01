@@ -1,0 +1,22 @@
+> parseExpr(bp=0)
+  > parsePrefix()
+      curToken=Ident[name=a]
+  < parsePrefix = a
+    peek=+ lbp=6 > bp=0 => bind
+  > parseInfix(left=a op=+ rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Ident[name=b]
+      < parsePrefix = b
+        peek=+ lbp=6 <= bp=7 => stop
+    < parseExpr = b
+  < parseInfix = (a + b)
+    peek=+ lbp=6 > bp=0 => bind
+  > parseInfix(left=(a + b) op=+ rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Ident[name=c]
+      < parsePrefix = c
+    < parseExpr = c
+  < parseInfix = ((a + b) + c)
+< parseExpr = ((a + b) + c)

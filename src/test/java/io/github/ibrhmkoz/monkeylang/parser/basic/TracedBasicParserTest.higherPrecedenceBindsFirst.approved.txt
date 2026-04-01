@@ -1,0 +1,21 @@
+> parseExpr(bp=0)
+  > parsePrefix()
+      curToken=Int[value=1]
+  < parsePrefix = 1
+    peek=+ lbp=6 > bp=0 => bind
+  > parseInfix(left=1 op=+ rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Int[value=2]
+      < parsePrefix = 2
+        peek=* lbp=8 > bp=7 => bind
+      > parseInfix(left=2 op=* rbp=9)
+        > parseExpr(bp=9)
+          > parsePrefix()
+              curToken=Int[value=3]
+          < parsePrefix = 3
+        < parseExpr = 3
+      < parseInfix = (2 * 3)
+    < parseExpr = (2 * 3)
+  < parseInfix = (1 + (2 * 3))
+< parseExpr = (1 + (2 * 3))

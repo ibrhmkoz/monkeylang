@@ -1,0 +1,7 @@
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.groupedExpression.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.lowerPrecedenceStops.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.leftAssociativity.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.prefixOperator.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.mixedComparisonAndEquality.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.higherPrecedenceBindsFirst.approved.txt
+/Users/ibrahimkoz/Dev/monkeylang/./src/test/java/io/github/ibrhmkoz/monkeylang/parser/basic/TracedBasicParserTest.mixedPrecedence.approved.txt

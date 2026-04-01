@@ -28,11 +28,17 @@ record BindingPower(int left, int right) {
 public class BasicParser implements Parser {
 
     private final Tokenizer tokenizer;
+    private final Tracer tracer;
     private Token curToken;
     private Token peekToken;
 
     public BasicParser(Tokenizer tokenizer) {
+        this(tokenizer, new Tracer.Noop());
+    }
+
+    public BasicParser(Tokenizer tokenizer, Tracer tracer) {
         this.tokenizer = tokenizer;
+        this.tracer = tracer;
         advance();
         advance();
     }
@@ -75,27 +81,44 @@ public class BasicParser implements Parser {
     }
 
     private Result<Node.Expr, String> parseExpr(int bp) {
+        tracer.enter("parseExpr", "bp=" + bp);
+
         var left = parsePrefix();
 
         while (left instanceof Ok<Node.Expr, String>(var expr)
             && peekToken instanceof Token.InfixOp op
             && bp < BindingPower.of(op).left()) {
+            tracer.note("peek=" + op + " lbp=" + BindingPower.of(op).left() + " > bp=" + bp + " => bind");
             advance();
             left = parseInfix(expr);
         }
 
+        if (peekToken instanceof Token.InfixOp op
+            && left instanceof Ok<?, ?>
+            && bp >= BindingPower.of(op).left()) {
+            tracer.note("peek=" + op + " lbp=" + BindingPower.of(op).left() + " <= bp=" + bp + " => stop");
+        }
+
+        var result = formatResult(left);
+        tracer.exit("parseExpr", result);
         return left;
     }
 
     private Result<Node.Expr, String> parsePrefix() {
-        return switch (curToken) {
-            case Token.Ident(var name) -> Result.ok(new Node.Expr.Ident(name));
-            case Token.Int(var value) -> Result.ok(new Node.Expr.Int(value));
-            case Token.Bool(var value) -> Result.ok(new Node.Expr.Bool(value));
+        tracer.enter("parsePrefix", "");
+        tracer.note("curToken=" + curToken);
+
+        var result = switch (curToken) {
+            case Token.Ident(var name) -> Result.<Node.Expr, String>ok(new Node.Expr.Ident(name));
+            case Token.Int(var value) -> Result.<Node.Expr, String>ok(new Node.Expr.Int(value));
+            case Token.Bool(var value) -> Result.<Node.Expr, String>ok(new Node.Expr.Bool(value));
             case Token.PrefixOp op -> parsePrefixExpr(op);
             case Token.LParen _ -> parseGroupedExpr();
-            default -> Result.err("no prefix parser for: " + curToken);
+            default -> Result.<Node.Expr, String>err("no prefix parser for: " + curToken);
         };
+
+        tracer.exit("parsePrefix", formatResult(result));
+        return result;
     }
 
     private Result<Node.Expr, String> parsePrefixExpr(Token.PrefixOp op) {
@@ -121,11 +144,16 @@ public class BasicParser implements Parser {
             throw new IllegalStateException("unexpected infix token: " + curToken);
         }
         var rbp = BindingPower.of(op).right();
+        tracer.enter("parseInfix", "left=" + left.unparse() + " op=" + op + " rbp=" + rbp);
+
         advance();
-        return switch (parseExpr(rbp)) {
-            case Ok<Node.Expr, String>(var right) -> Result.ok(new Node.Expr.Infix(left, op, right));
+        var result = switch (parseExpr(rbp)) {
+            case Ok<Node.Expr, String>(var right) -> Result.<Node.Expr, String>ok(new Node.Expr.Infix(left, op, right));
             case Err<Node.Expr, String> err -> err;
         };
+
+        tracer.exit("parseInfix", formatResult(result));
+        return result;
     }
 
     private Result<Node.Stmt, String> parseLetStmt() {
@@ -161,5 +189,12 @@ public class BasicParser implements Parser {
     private void advance() {
         curToken = peekToken;
         peekToken = tokenizer.nextToken();
+    }
+
+    private static String formatResult(Result<? extends Node, String> result) {
+        return switch (result) {
+            case Ok<? extends Node, String>(var node) -> node.unparse();
+            case Err<? extends Node, String>(var error) -> "ERR: " + error;
+        };
     }
 }

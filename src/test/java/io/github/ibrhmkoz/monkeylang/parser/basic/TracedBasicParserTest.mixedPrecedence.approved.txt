@@ -1,0 +1,49 @@
+> parseExpr(bp=0)
+  > parsePrefix()
+      curToken=Ident[name=a]
+  < parsePrefix = a
+    peek=+ lbp=6 > bp=0 => bind
+  > parseInfix(left=a op=+ rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Ident[name=b]
+      < parsePrefix = b
+        peek=* lbp=8 > bp=7 => bind
+      > parseInfix(left=b op=* rbp=9)
+        > parseExpr(bp=9)
+          > parsePrefix()
+              curToken=Ident[name=c]
+          < parsePrefix = c
+            peek=+ lbp=6 <= bp=9 => stop
+        < parseExpr = c
+      < parseInfix = (b * c)
+        peek=+ lbp=6 <= bp=7 => stop
+    < parseExpr = (b * c)
+  < parseInfix = (a + (b * c))
+    peek=+ lbp=6 > bp=0 => bind
+  > parseInfix(left=(a + (b * c)) op=+ rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Ident[name=d]
+      < parsePrefix = d
+        peek=/ lbp=8 > bp=7 => bind
+      > parseInfix(left=d op=/ rbp=9)
+        > parseExpr(bp=9)
+          > parsePrefix()
+              curToken=Ident[name=e]
+          < parsePrefix = e
+            peek=- lbp=6 <= bp=9 => stop
+        < parseExpr = e
+      < parseInfix = (d / e)
+        peek=- lbp=6 <= bp=7 => stop
+    < parseExpr = (d / e)
+  < parseInfix = ((a + (b * c)) + (d / e))
+    peek=- lbp=6 > bp=0 => bind
+  > parseInfix(left=((a + (b * c)) + (d / e)) op=- rbp=7)
+    > parseExpr(bp=7)
+      > parsePrefix()
+          curToken=Ident[name=f]
+      < parsePrefix = f
+    < parseExpr = f
+  < parseInfix = (((a + (b * c)) + (d / e)) - f)
+< parseExpr = (((a + (b * c)) + (d / e)) - f)

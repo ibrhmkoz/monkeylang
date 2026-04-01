@@ -1,0 +1,23 @@
+> parseExpr(bp=0)
+  > parsePrefix()
+      curToken=-
+    > parseExpr(bp=10)
+      > parsePrefix()
+          curToken=(
+        > parseExpr(bp=0)
+          > parsePrefix()
+              curToken=Int[value=5]
+          < parsePrefix = 5
+            peek=+ lbp=6 > bp=0 => bind
+          > parseInfix(left=5 op=+ rbp=7)
+            > parseExpr(bp=7)
+              > parsePrefix()
+                  curToken=Int[value=5]
+              < parsePrefix = 5
+            < parseExpr = 5
+          < parseInfix = (5 + 5)
+        < parseExpr = (5 + 5)
+      < parsePrefix = (5 + 5)
+    < parseExpr = (5 + 5)
+  < parsePrefix = (-(5 + 5))
+< parseExpr = (-(5 + 5))
