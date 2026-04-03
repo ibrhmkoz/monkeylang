@@ -3,6 +3,7 @@ package io.github.ibrhmkoz.monkeylang.parser.basic;
 import io.github.ibrhmkoz.lib.result.Err;
 import io.github.ibrhmkoz.lib.result.Ok;
 import io.github.ibrhmkoz.lib.result.Result;
+import io.github.ibrhmkoz.lib.tracer.Tracer;
 import io.github.ibrhmkoz.monkeylang.ast.Node;
 import io.github.ibrhmkoz.monkeylang.parser.Parser;
 import io.github.ibrhmkoz.monkeylang.token.Token;
