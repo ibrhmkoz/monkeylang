@@ -142,7 +142,7 @@ public class BasicParser implements Parser {
 
     private Result<Node.Expr, String> parseInfix(Node.Expr left) {
         if (!(curToken instanceof Token.InfixOp op)) {
-            throw new IllegalStateException("unexpected infix token: " + curToken);
+            return Result.err("unexpected infix token: " + curToken);
         }
         var rbp = BindingPower.of(op).right();
         tracer.enter("parseInfix", "left=" + left.unparse() + " op=" + op + " rbp=" + rbp);
